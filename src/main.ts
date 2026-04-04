@@ -6,7 +6,7 @@ import {
   diffWords,
 } from 'diff'
 
-type DiffMode = 'chars' | 'words' | 'lines' | 'patch'
+type DiffMode = 'patch' | 'chars' | 'words' | 'lines'
 
 type UploadedFile = {
   id: string
@@ -36,10 +36,10 @@ app.innerHTML = `
       </div>
       <fieldset class="mode-picker">
         <legend>Mode</legend>
-        <label><input type="radio" name="diff-mode" value="chars" checked> Chars</label>
+        <label><input type="radio" name="diff-mode" value="patch" checked> Patch</label>
+        <label><input type="radio" name="diff-mode" value="chars"> Chars</label>
         <label><input type="radio" name="diff-mode" value="words"> Words</label>
         <label><input type="radio" name="diff-mode" value="lines"> Lines</label>
-        <label><input type="radio" name="diff-mode" value="patch"> Patch</label>
       </fieldset>
     </header>
 
@@ -100,7 +100,7 @@ const splitters = document.querySelectorAll<HTMLElement>('.splitter')
 let files: UploadedFile[] = []
 let leftFileId = ''
 let rightFileId = ''
-let diffMode: DiffMode = 'chars'
+let diffMode: DiffMode = 'patch'
 let leftContent = ''
 let rightContent = ''
 
