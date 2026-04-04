@@ -31,7 +31,7 @@ app.innerHTML = `
   <main class="layout">
     <header class="toolbar">
       <div>
-        <h1>Visual Diff</h1>
+        <h1>JsDiff UI</h1>
         <p class="subtitle">Based on <a href="https://github.com/kpdecker/jsdiff">https://github.com/kpdecker/jsdiff</a></p>
       </div>
       <fieldset class="mode-picker">
