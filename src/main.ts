@@ -57,7 +57,7 @@ app.innerHTML = `
 
     <section class="workspace">
       <section class="file-panel">
-        <label class="picker-label" for="left-file">Left file list</label>
+        <label class="picker-label" for="left-file">File A</label>
         <select id="left-file" class="file-list" size="5"></select>
         <textarea id="left-text" spellcheck="false" placeholder="Choose a file to view or edit its contents"></textarea>
       </section>
@@ -65,7 +65,7 @@ app.innerHTML = `
       <div class="splitter" data-splitter="left" role="separator" aria-orientation="vertical" aria-label="Resize left and right panels" tabindex="0"></div>
 
       <section class="file-panel">
-        <label class="picker-label" for="right-file">Right file list</label>
+        <label class="picker-label" for="right-file">File B</label>
         <select id="right-file" class="file-list" size="5"></select>
         <textarea id="right-text" spellcheck="false" placeholder="Choose a file to view or edit its contents"></textarea>
       </section>
@@ -189,13 +189,12 @@ function getSelectedFile(fileId: string) {
 }
 
 function renderSelectors() {
-  const placeholder = '<option value="">Select a file</option>'
   const options = files
     .map((file) => `<option value="${file.id}">${escapeHtml(file.name)}</option>`)
     .join('')
 
-  leftSelect.innerHTML = placeholder + options
-  rightSelect.innerHTML = placeholder + options
+  leftSelect.innerHTML = options
+  rightSelect.innerHTML = options
 
   leftSelect.value = leftFileId
   rightSelect.value = rightFileId
