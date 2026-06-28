@@ -1,12 +1,5 @@
 import './style.css'
-import {
-  createTwoFilesPatch,
-  diffChars,
-  diffLines,
-  diffWords,
-} from 'diff'
-
-type DiffMode = 'patch' | 'chars' | 'words' | 'lines'
+import { createTwoFilesPatch } from 'diff'
 
 type UploadedFile = {
   id: string
@@ -34,13 +27,6 @@ app.innerHTML = `
         <h1>JsDiff UI</h1>
         <p class="subtitle">Based on <a href="https://github.com/kpdecker/jsdiff">https://github.com/kpdecker/jsdiff</a></p>
       </div>
-      <fieldset class="mode-picker">
-        <legend>Mode</legend>
-        <label><input type="radio" name="diff-mode" value="patch" checked> Patch</label>
-        <label><input type="radio" name="diff-mode" value="chars"> Chars</label>
-        <label><input type="radio" name="diff-mode" value="words"> Words</label>
-        <label><input type="radio" name="diff-mode" value="lines"> Lines</label>
-      </fieldset>
     </header>
 
     <section class="upload-panel">
@@ -93,14 +79,12 @@ const leftText = document.querySelector<HTMLTextAreaElement>('#left-text')!
 const rightText = document.querySelector<HTMLTextAreaElement>('#right-text')!
 const result = document.querySelector<HTMLPreElement>('#result')!
 const status = document.querySelector<HTMLSpanElement>('#status')!
-const modeInputs = document.querySelectorAll<HTMLInputElement>('input[name="diff-mode"]')
 const workspace = document.querySelector<HTMLElement>('.workspace')!
 const splitters = document.querySelectorAll<HTMLElement>('.splitter')
 
 let files: UploadedFile[] = []
 let leftFileId = ''
 let rightFileId = ''
-let diffMode: DiffMode = 'patch'
 let leftContent = ''
 let rightContent = ''
 
@@ -232,33 +216,17 @@ function normalizePatchDiff(leftName: string, rightName: string, leftValue: stri
     })
 }
 
-function getDiffParts(leftName: string, rightName: string, leftValue: string, rightValue: string): DiffPart[] {
-  if (diffMode === 'patch') {
-    return normalizePatchDiff(leftName, rightName, leftValue, rightValue)
-  }
-
-  if (diffMode === 'words') {
-    return diffWords(leftValue, rightValue)
-  }
-
-  if (diffMode === 'lines') {
-    return diffLines(leftValue, rightValue)
-  }
-
-  return diffChars(leftValue, rightValue)
-}
-
 function renderDiff() {
-  const left = getSelectedFile(leftFileId)
-  const right = getSelectedFile(rightFileId)
+  let left = getSelectedFile(leftFileId) || { id: 'a', name: 'a', content: '' }
+  let right = getSelectedFile(rightFileId) || { id: 'b', name: 'b', content: '' }
 
-  if (!left || !right) {
+  if (!leftContent || !rightContent) {
     result.innerHTML = ''
-    status.textContent = files.length < 2 ? 'Upload at least two files.' : 'Choose one file on each side.'
+    status.textContent = 'Need two files to compare.'
     return
   }
 
-  const parts = getDiffParts(left.name, right.name, leftContent, rightContent)
+  const parts = normalizePatchDiff(left.name, right.name, leftContent, rightContent)
   const normalized = [...parts]
 
   for (let index = 0; index < normalized.length; index += 1) {
@@ -386,15 +354,6 @@ rightText.addEventListener('input', () => {
   rightContent = rightText.value
   renderDiff()
 })
-
-for (const input of modeInputs) {
-  input.addEventListener('change', () => {
-    if (input.checked) {
-      diffMode = input.value as DiffMode
-      renderDiff()
-    }
-  })
-}
 
 dropzone.addEventListener('dragover', (event) => {
   event.preventDefault()
